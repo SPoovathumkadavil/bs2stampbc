@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 
-#include "lib.hpp"
+#include "stampbc-lib/project.hpp"
 
-auto main() -> int;
+void printUsage();
+int processOptions(int argc, char** argv, Project& proj);
+int main(int argc, char* argv[]);

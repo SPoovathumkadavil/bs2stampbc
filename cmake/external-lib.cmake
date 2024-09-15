@@ -16,6 +16,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(fetalib)
 target_link_libraries(stampbc_lib fetalib::files)
 
+FetchContent_Declare(
+  pbtokenizer
+  GIT_REPOSITORY https://github.com/SPoovathumkadavil/pbtokenizer.git
+  GIT_TAG v0.1.4
+)
+FetchContent_MakeAvailable(pbtokenizer)
+target_link_libraries(stampbc_lib pbtokenizer::tokenizer)
+
 # ---- raylib ----
 # FetchContent_Declare(
 #     raylib
