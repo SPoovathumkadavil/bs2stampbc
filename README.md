@@ -1,6 +1,6 @@
 # stampbc
 
-This is the [[project]] project.
+This is the stampbc project. The project contains the wrapper compiler and loader for PBASIC scripts.
 
 # Building and installing
 
