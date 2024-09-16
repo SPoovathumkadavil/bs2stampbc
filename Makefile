@@ -35,7 +35,7 @@ run:
 .PHONY: test
 test: 
 	echo "running test"
-	$(BUILD_DEV_DIR)/test/$(APP)_test
+	cd $(BUILD_DEV_DIR)/test && ./$(APP)_test
 
 .PHONY: clean
 clean:

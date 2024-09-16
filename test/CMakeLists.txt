@@ -16,7 +16,7 @@ enable_testing()
 file(GLOB_RECURSE stampbc_test_sources "src/*.cpp")
 add_executable(stampbc_test ${stampbc_test_sources})
 target_link_libraries(stampbc_test 
-  PRIVATE
+  PUBLIC
   GTest::gtest_main
   stampbc_lib)
 target_compile_features(stampbc_test PRIVATE cxx_std_17)

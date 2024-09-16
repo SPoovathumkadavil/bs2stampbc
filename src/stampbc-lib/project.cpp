@@ -126,7 +126,7 @@ bool Project::compile()
 
   // compile first source
   bool compiled = cmp->compile(m_sSourceFile[0], m_sObjectFile[0],
-    sType, sPort, directivesOnly, parseStampDirective, true);
+    sType, sPort, directivesOnly, parseStampDirective, false);
 
   if (compiled && isFlags(F_MEMORYMAP | F_MEMORYUSAGE))
     cmp->dump(isFlags(F_MEMORYMAP));

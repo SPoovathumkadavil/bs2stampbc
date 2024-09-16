@@ -14,7 +14,6 @@
 typedef unsigned char byte;
 
 #undef bool
-#define bool byte
 
 #undef word
 typedef unsigned short int word;

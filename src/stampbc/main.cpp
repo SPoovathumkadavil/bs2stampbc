@@ -3,8 +3,11 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <unistd.h>
+
+#include <fetalib/cli/arguments.hpp>
 
 #include "project.hpp"
 
@@ -32,8 +35,8 @@ void printUsage()
 //------------------------------------------------------------------------------
 // processOptions
 //
-// -c       compile single file only
-// -C       compile project only
+// -c file  compile single file only
+// -C file  compile project only
 // -d       download only
 // -h       help
 // -i type  identify specified stamp type
@@ -47,110 +50,144 @@ void printUsage()
 // -v       verbose
 // -V       print stampbc and tokenizer version
 //------------------------------------------------------------------------------
-int processOptions(int argc, char** argv, Project& proj)
+int processOptions(int argc, char** argv)
 {
-  static char options[] = "cCdhi:jmMno:p:s:vV";
-  int opt;
-  int f;
-  string objFile;
+  Project proj;
+
+  // char options[] = "cCdhi:jmMno:p:s:vV";
+
+  feta::ArgumentParser argparser(argc, argv);
+  argparser.add_option("-c");
+  argparser.add_option("-C", "", "", true);
+  argparser.add_option("-d");
+  argparser.add_option("-h", "", "", true);
+  argparser.add_option("-i");
+  argparser.add_option("-j", "", "", true);
+  argparser.add_option("-m", "", "", true);
+  argparser.add_option("-M", "", "", true);
+  argparser.add_option("-n", "", "", true);
+  argparser.add_option("-o");
+  argparser.add_option("-p");
+  argparser.add_option("-s");
+  argparser.add_option("-v", "", "", true);
+  argparser.add_option("-V", "", "", true);
 
   if (argc < 2) {
     printUsage();
     return 1;
   }
 
-  while ((opt = getopt(argc, argv, options)) != -1) {
-    switch (opt) {
-      case 'c':
-        f = proj.getFlags() | Project::F_COMPILEONLY
-            | Project::F_IGNPROJECT;
-        proj.setFlags(f);
-        break;
+  try {
+    std::string file = argparser.get<std::string>("-c");
+    proj.setFlags(proj.getFlags() | Project::F_COMPILEONLY | Project::F_IGNPROJECT);
+    proj.setSourceFile(0, file);
+  } catch (std::invalid_argument e) {}
+  try {
+    bool t = argparser.get<bool>("-V");
+    if (t)
+      proj.setFlags(proj.getFlags() | Project::F_VERSIONINFO);
+  } catch (std::invalid_argument e) {}
+  try {
+    std::string file = argparser.get<std::string>("-o");
+    proj.setObjectFile(0, file);
+  } catch (std::invalid_argument e) {}
 
-      case 'C':
-        f = proj.getFlags()
-            | Project::F_COMPILEONLY & ~Project::F_IGNPROJECT;
-        proj.setFlags(f);
-        break;
+  // while ((opt = getopt(argc, argv, options)) != -1) {
+  //   switch (opt) {
+  //     case 'c':
+  //       f = proj.getFlags() | Project::F_COMPILEONLY
+  //           | Project::F_IGNPROJECT;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'd':
-        f = proj.getFlags() | Project::F_DOWNLOADONLY;
-        proj.setFlags(f);
-        break;
+  //     case 'C':
+  //       f = proj.getFlags()
+  //           | Project::F_COMPILEONLY & ~Project::F_IGNPROJECT;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'h':
-        printUsage();
-        return 1;
-        break;
+  //     case 'd':
+  //       f = proj.getFlags() | Project::F_DOWNLOADONLY;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'i':
-        f = proj.getFlags() | Project::F_OVRSTAMP;
-        proj.setFlags(f);
-        proj.setType(string(optarg));
-        break;
+  //     case 'h':
+  //       printUsage();
+  //       return 1;
+  //       break;
 
-      case 'j':
-        f = proj.getFlags() | Project::F_IDENTIFYONLY;
-        proj.setFlags(f);
-        break;
+  //     case 'i':
+  //       f = proj.getFlags() | Project::F_OVRSTAMP;
+  //       proj.setFlags(f);
+  //       proj.setType(string(optarg));
+  //       break;
 
-      case 'm':
-        f = proj.getFlags() | Project::F_MEMORYUSAGE;
-        proj.setFlags(f);
-        break;
+  //     case 'j':
+  //       f = proj.getFlags() | Project::F_IDENTIFYONLY;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'M':
-        f = proj.getFlags() | Project::F_MEMORYMAP;
-        proj.setFlags(f);
-        break;
+  //     case 'm':
+  //       f = proj.getFlags() | Project::F_MEMORYUSAGE;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'n':
-        f = proj.getFlags() | Project::F_SYNTAXONLY | Project::F_IGNPROJECT;
-        proj.setFlags(f);
-        break;
+  //     case 'M':
+  //       f = proj.getFlags() | Project::F_MEMORYMAP;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'o':
-        objFile = string(optarg);
-        break;
+  //     case 'n':
+  //       f = proj.getFlags() | Project::F_SYNTAXONLY | Project::F_IGNPROJECT;
+  //       proj.setFlags(f);
+  //       break;
 
-      case 'p':
-        f = proj.getFlags() | Project::F_OVRPORT;
-        proj.setFlags(f);
-        proj.setPort(string(optarg));
-        break;
+  //     case 'o':
+  //       objFile = string(optarg);
+  //       break;
 
-      case 's':
-        proj.setSlot(atoi(optarg));
-        break;
+  //     case 'p':
+  //       f = proj.getFlags() | Project::F_OVRPORT;
+  //       proj.setFlags(f);
+  //       proj.setPort(string(optarg));
+  //       break;
 
-      case 'v':
-        f = proj.getFlags() | Project::F_VERBOSE;
-        proj.setFlags(f);
-        break;
+  //     case 's':
+  //       proj.setSlot(atoi(optarg));
+  //       break;
 
-      case 'V':
-        f = proj.getFlags() | Project::F_VERSIONINFO;
-        proj.setFlags(f);
-        break;
+  //     case 'v':
+  //       f = proj.getFlags() | Project::F_VERBOSE;
+  //       proj.setFlags(f);
+  //       break;
 
-      default:
-        return -1;
-    }
-  }
+  //     case 'V':
+  //       f = proj.getFlags() | Project::F_VERSIONINFO;
+  //       proj.setFlags(f);
+  //       break;
 
-  if (optind < argc) {
-    string fileName(argv[optind]);
+  //     default:
+  //       return -1;
+  //   }
+  // }
 
-    if (proj.isFlagsAnd(Project::F_COMPILEONLY | Project::F_IGNPROJECT)) {
-      proj.setObjectFile(0, objFile);
-    }
+  // if (optind < argc) {
+  //   string fileName(argv[optind]);
 
-    if (proj.isFlags(Project::F_DOWNLOADONLY)) {
-      proj.setObjectFile(0, fileName);
-    } else {
-      proj.setSourceFile(0, fileName);
-    }
-  }
+  //   if (proj.isFlagsAnd(Project::F_COMPILEONLY | Project::F_IGNPROJECT)) {
+  //     proj.setObjectFile(0, objFile);
+  //   }
+
+  //   if (proj.isFlags(Project::F_DOWNLOADONLY)) {
+  //     proj.setObjectFile(0, fileName);
+  //   } else {
+  //     proj.setSourceFile(0, fileName);
+  //   }
+  // }
+
+  printf("FLAG SHOULD BE: %i -- IS: %i\n", Project::F_COMPILEONLY | Project::F_IGNPROJECT, proj.getFlags());
+
+  proj.process();
 
   return 0;
 }
@@ -160,13 +197,8 @@ int processOptions(int argc, char** argv, Project& proj)
 //------------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
-  Project prj;
 
-  int ret = processOptions(argc, argv, prj);
-
-  if (ret == 0) {
-    ret = prj.process() ? 0 : -1;
-  }
+  int ret = processOptions(argc, argv);
 
   // ret may be > 0 from processOptions, that is ok
   exit(ret > 0 ? 0 : ret);
