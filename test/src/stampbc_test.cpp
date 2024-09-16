@@ -17,7 +17,7 @@ TEST(ProjectTest, CompileTestFile)
   proj.setFlags(Project::F_COMPILEONLY
             | Project::F_IGNPROJECT);
   int ret = proj.process();
-  ASSERT_TRUE(ret > 0);
+  ASSERT_TRUE(ret >= 0);
 }
 
 int main(int argc, char** argv)

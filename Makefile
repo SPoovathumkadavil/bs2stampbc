@@ -18,7 +18,7 @@ CONFIG_DIR = config
 .PHONY: build
 build: clean
 	echo "building release ..."
-	cmake -S . -B build -D CMAKE_BUILD_TYPE=Release
+	cmake -S . -B build -D CMAKE_BUILD_TYPE=Debug
 	cmake --build build
 
 .PHONY: dev

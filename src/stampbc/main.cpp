@@ -185,8 +185,6 @@ int processOptions(int argc, char** argv)
   //   }
   // }
 
-  printf("FLAG SHOULD BE: %i -- IS: %i\n", Project::F_COMPILEONLY | Project::F_IGNPROJECT, proj.getFlags());
-
   proj.process();
 
   return 0;
@@ -201,5 +199,5 @@ int main(int argc, char* argv[])
   int ret = processOptions(argc, argv);
 
   // ret may be > 0 from processOptions, that is ok
-  exit(ret > 0 ? 0 : ret);
+  return ret > 0 ? 0 : ret;
 };
