@@ -377,7 +377,8 @@ bool Loader::download(const std::string objFile, std::string& sType, int slot)
 void Loader::resetDev(bool brkcond)
 {
   closeDev();
-  m_fp = open(m_port.c_str(), O_RDWR);
+  m_fp = open(m_port.c_str(), O_RDWR | O_NOCTTY);
+  CO_DEBUG << EYEINF << " m_port: " << m_port.c_str() << ENDL;
 
   if FP_SAFE {
     CO_DEBUG << EYEINF << " opened " << m_port << " as " << m_fp << ENDL;
@@ -533,13 +534,18 @@ void Loader::sendIdChars(const char* toSend, const char* toRecv,
     // ID process for standard BS2 type stamps
     if (isBS2) {
       // try to identify a BS2 type stamp
+      CO_DEBUG << EYEINF << " m_done: " << m_done << ENDL;
+      CO_DEBUG << EYEINF << " (*toSend != '\\000'): " << (*toSend != '\000') << ENDL;
       while (m_done && (*toSend != '\000')) {
         char cq = 256 - *toSend;
 
         send(toSend, 1);
         receive(cr, trshd, n, true);
 
+        CO_DEBUG << EYEINF << " sent '" << toSend << "' -- recieved '" << cr << ENDL;
+
         m_done = (NO_TIMEOUT && (n == trshd) && (cr[1] == cq));
+        CO_DEBUG << EYEINF << " cr == torecv: " << (cr == toRecv) << ENDL;
         toSend++;
       }
 

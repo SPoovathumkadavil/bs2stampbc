@@ -91,6 +91,21 @@ int processOptions(int argc, char** argv)
     std::string file = argparser.get<std::string>("-o");
     proj.setObjectFile(0, file);
   } catch (std::invalid_argument e) {}
+  try {
+    std::string type = argparser.get<std::string>("-i");
+    proj.setFlags(proj.getFlags() | Project::F_OVRSTAMP);
+    proj.setType(type);
+  } catch (std::invalid_argument e) {}
+  try {
+    bool t = argparser.get<bool>("-j");
+    if (t)
+    proj.setFlags(proj.getFlags() | Project::F_IDENTIFYONLY);
+  } catch (std::invalid_argument e) {}
+  try {
+    bool t = argparser.get<bool>("-v");
+    if (t)
+    proj.setFlags(proj.getFlags() | Project::F_VERBOSE);
+  } catch (std::invalid_argument e) {}
 
   // while ((opt = getopt(argc, argv, options)) != -1) {
   //   switch (opt) {

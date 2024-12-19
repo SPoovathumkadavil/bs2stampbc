@@ -20,8 +20,10 @@ typedef unsigned short int word;
 
 #define STAMPBC_VERSION		"stampbc v0.1.0(2024)"
 
-#define COMM_DEVICE		"/dev/tty.usbserial"                // macos
-#define COMM_DEVICE_DEFAULT	"/dev/tty.usbserial-A8004JO5" // macos
+/*#define COMM_DEVICE		"/dev/tty.usbserial"                // macos*/
+/*#define COMM_DEVICE_DEFAULT	"/dev/tty.usbserial-A8004JO5" // macos*/
+#define COMM_DEVICE "/dev/ttyUSB0"
+#define COMM_DEVICE_DEFAULT "/dev/ttyUSB0"
 
 #define RECV_TIMEOUT_S          0
 #define RECV_TIMEOUT_US         250000
